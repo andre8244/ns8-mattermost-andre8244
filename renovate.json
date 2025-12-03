@@ -30,12 +30,6 @@
       "description": "Disable major version upgrades for all npm packages. Useful to avoid Vue 2 to Vue 3 and Carbon upgrades."
     },
     {
-      "description": "Pin Vue CLI packages to 4.5.18 to avoid node and @achrinza/node-ipc compatibility issues",
-      "matchDatasources": ["npm"],
-      "matchPackagePatterns": ["^@vue/cli-"],
-      "replacementVersion": "4.5.18"
-    },
-    {
       "description": "Disable updates for Vue CLI monorepo packages to avoid node and @achrinza/node-ipc compatibility issues",
       "matchPackagePatterns": ["^@vue/cli-", "@vue/cli"],
       "enabled": false
