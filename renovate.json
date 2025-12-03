@@ -28,6 +28,14 @@
       "allowedVersions": "<3.0.0"
     },
     {
+      "description": "Disable updates for Vue CLI monorepo packages to avoid node and @achrinza/node-ipc compatibility issues",
+      "matchPackagePatterns": [
+        "^@vue/cli-",
+        "@vue/cli"
+      ],
+      "enabled": false
+    },
+    {
       "matchPackageNames": ["mattermost/mattermost-team-edition"],
       "allowedVersions": "10.5.*",
       "groupName": "ESR 10.5.x updates",
