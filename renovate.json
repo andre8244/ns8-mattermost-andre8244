@@ -24,10 +24,8 @@
       "automerge": true
     },
     {
-      "matchDatasources": ["npm"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false,
-      "description": "Disable major version upgrades for all npm packages. Useful to avoid Vue 2 to Vue 3 and Carbon upgrades."
+      "matchPackageNames": ["vue", "vue-template-compiler"],
+      "allowedVersions": "<3.0.0"
     },
     {
       "matchPackageNames": ["mattermost/mattermost-team-edition"],
