@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>NethServer/.github:base", ":maintainLockFilesMonthly"],
+  "extends": [":maintainLockFilesMonthly", ":automergePatch"],
   "forkProcessing": "enabled",
   "branchPrefix": "renovate-",
   "branchNameStrict": true,
