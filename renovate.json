@@ -1,9 +1,29 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>NethServer/.github:ns8"
-  ],
+  "extends": ["local>NethServer/.github:base", ":maintainLockFilesMonthly"],
+  "branchPrefix": "renovate-",
+  "branchNameStrict": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "ignoreDeps": ["vue"]
+  },
+  "rebaseWhen": "never",
+  "keepUpdatedLabel": "auto-update",
   "packageRules": [
+    {
+      "description": "Enable digest pinning only for Debian and Ubuntu base images",
+      "matchManagers": ["dockerfile"],
+      "matchDepNames": ["docker.io/library/debian", "docker.io/library/ubuntu"],
+      "matchFileNames": ["(^|/)Containerfile$", "(^|/)Dockerfile$"],
+      "pinDigests": true,
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false,
+      "description": "Disable major version upgrades for all npm packages. Useful to avoid Vue 2 to Vue 3 and Carbon upgrades."
+    },
     {
       "matchPackageNames": ["mattermost/mattermost-team-edition"],
       "allowedVersions": "10.5.*",
@@ -15,6 +35,43 @@
       "matchUpdateTypes": ["major", "minor"],
       "groupName": "Non-ESR update",
       "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "groupName": "Debian/Ubuntu packages",
+      "groupSlug": "deb-update",
+      "fileMatch": ["(^|/)Containerfile$", "(^|/)Dockerfile$"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "#\\s*renovate-debian:\\s*(suite=(?<suite>.*))?[\\s\\S]+",
+        "(?:^|\\s)(?<depName>[a-z0-9][a-z0-9+._-]+?)=(?<currentValue>[0-9]+[^\\s]*?)(?:\\s|\\\\|$)"
+      ],
+      "datasourceTemplate": "deb",
+      "versioningTemplate": "deb",
+      "registryUrlTemplate": "https://deb.debian.org/debian?suite={{#if suite }}{{suite}}{{else}}stable{{/if}}&components=main,contrib,non-free&binaryArch=amd64"
+    },
+    {
+      "groupName": "Debian/Ubuntu packages",
+      "groupSlug": "deb-update",
+      "fileMatch": ["(^|/)Containerfile$", "(^|/)Dockerfile$"],
+      "matchStringsStrategy": "recursive",
+      "matchStrings": [
+        "#\\s*renovate-ubuntu:\\s*(suite=(?<suite>.*))?[\\s\\S]+",
+        "(?:^|\\s)(?<depName>[a-z0-9][a-z0-9+._-]+?)=(?<currentValue>[0-9]+[^\\s]*?)(?:\\s|\\\\|$)"
+      ],
+      "datasourceTemplate": "deb",
+      "versioningTemplate": "deb",
+      "registryUrlTemplate": "https://archive.ubuntu.com/ubuntu?suite={{#if suite }}{{suite}}{{else}}noble{{/if}}&components=main,universe,restricted,multiverse&binaryArch=amd64"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/)build-images?\\.sh$"],
+      "matchStrings": [
+        "docker\\.io\\/(?:library\\/)?(?<depName>[-0-9a-z_\\/.]+):(?<currentValue>[-0-9a-zA-Z_.]+)(@(?<currentDigest>sha256:[0-9a-f]+))?",
+        "(?<depName>(?:ghcr|quay)\\.io\\/[-0-9a-z_\\/.]+):(?<currentValue>[-0-9a-zA-Z_.]+)(@(?<currentDigest>sha256:[0-9a-f]+))?"
+      ],
+      "datasourceTemplate": "docker"
     }
   ]
 }
