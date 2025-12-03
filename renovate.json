@@ -1,6 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [":maintainLockFilesMonthly", ":automergePatch"],
+  "extends": [
+    "local>NethServer/.github:base",
+    ":maintainLockFilesMonthly",
+    ":automergePatch"
+  ],
   "forkProcessing": "enabled",
   "branchPrefix": "renovate-",
   "branchNameStrict": true,
@@ -36,43 +40,6 @@
       "matchUpdateTypes": ["major", "minor"],
       "groupName": "Non-ESR update",
       "automerge": false
-    }
-  ],
-  "customManagers": [
-    {
-      "groupName": "Debian/Ubuntu packages",
-      "groupSlug": "deb-update",
-      "fileMatch": ["(^|/)Containerfile$", "(^|/)Dockerfile$"],
-      "matchStringsStrategy": "recursive",
-      "matchStrings": [
-        "#\\s*renovate-debian:\\s*(suite=(?<suite>.*))?[\\s\\S]+",
-        "(?:^|\\s)(?<depName>[a-z0-9][a-z0-9+._-]+?)=(?<currentValue>[0-9]+[^\\s]*?)(?:\\s|\\\\|$)"
-      ],
-      "datasourceTemplate": "deb",
-      "versioningTemplate": "deb",
-      "registryUrlTemplate": "https://deb.debian.org/debian?suite={{#if suite }}{{suite}}{{else}}stable{{/if}}&components=main,contrib,non-free&binaryArch=amd64"
-    },
-    {
-      "groupName": "Debian/Ubuntu packages",
-      "groupSlug": "deb-update",
-      "fileMatch": ["(^|/)Containerfile$", "(^|/)Dockerfile$"],
-      "matchStringsStrategy": "recursive",
-      "matchStrings": [
-        "#\\s*renovate-ubuntu:\\s*(suite=(?<suite>.*))?[\\s\\S]+",
-        "(?:^|\\s)(?<depName>[a-z0-9][a-z0-9+._-]+?)=(?<currentValue>[0-9]+[^\\s]*?)(?:\\s|\\\\|$)"
-      ],
-      "datasourceTemplate": "deb",
-      "versioningTemplate": "deb",
-      "registryUrlTemplate": "https://archive.ubuntu.com/ubuntu?suite={{#if suite }}{{suite}}{{else}}noble{{/if}}&components=main,universe,restricted,multiverse&binaryArch=amd64"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["(^|/)build-images?\\.sh$"],
-      "matchStrings": [
-        "docker\\.io\\/(?:library\\/)?(?<depName>[-0-9a-z_\\/.]+):(?<currentValue>[-0-9a-zA-Z_.]+)(@(?<currentDigest>sha256:[0-9a-f]+))?",
-        "(?<depName>(?:ghcr|quay)\\.io\\/[-0-9a-z_\\/.]+):(?<currentValue>[-0-9a-zA-Z_.]+)(@(?<currentDigest>sha256:[0-9a-f]+))?"
-      ],
-      "datasourceTemplate": "docker"
     }
   ]
 }
